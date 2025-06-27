@@ -9,6 +9,7 @@ const productServiceRoutes = require('./productServiceRoutes');
 const inputRoutes = require('./inputRoutes');
 const budgetRoutes = require('./budgetRoutes');
 const budgetItemRoutes = require('./budgetItemRoutes');
+const aiRoutes = require('./aiRoutes');
 
 // Usa as rotas importadas, definindo seus caminhos base (sem o /api aqui, pois será adicionado em app.js)
 // Ex: As rotas definidas em userRoutes (como '/') serão acessíveis via /users
@@ -17,5 +18,6 @@ router.use('/productservices', productServiceRoutes);
 router.use('/inputs', inputRoutes);
 router.use('/budgets', budgetRoutes);
 router.use('/budgetitems', budgetItemRoutes);
+router.use('/ai', aiRoutes);
 
 module.exports = router; // Exporta este router que contém todas as sub-rotas
