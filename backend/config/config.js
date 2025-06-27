@@ -9,7 +9,7 @@ module.exports = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: false, // Opcional: define se o Sequelize mostrará logs SQL no console
+    logging: true, // Opcional: define se o Sequelize mostrará logs SQL no console
   },
   // Você pode adicionar configurações para 'test' e 'production' aqui futuramente
   test: {

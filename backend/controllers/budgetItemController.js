@@ -21,20 +21,12 @@ exports.createBudgetItem = async (req, res, next) => {
   const user_id = req.user.id; // ID do usuário logado
 
   // Validação básica
-  if (
-    !budget_id ||
-    !product_service_id ||
-    !name ||
-    !quantity ||
-    !unit_price ||
-    !total_item_price
-  ) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Todos os campos obrigatórios (budget_id, product_service_id, name, quantity, unit_price, total_item_price) devem ser preenchidos.",
-      });
+  // product_service_id não é mais validado aqui, pois pode ser null
+  if (!budget_id || !name || !quantity || !unit_price || !total_item_price) {
+    return res.status(400).json({
+      message:
+        "Todos os campos obrigatórios (budget_id, name, quantity, unit_price, total_item_price) devem ser preenchidos.",
+    });
   }
 
   try {
@@ -43,30 +35,39 @@ exports.createBudgetItem = async (req, res, next) => {
       where: { id: budget_id, user_id: user_id },
     });
     if (!budget) {
-      return res
-        .status(404)
-        .json({
-          message: "Orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message: "Orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
-    // 2. Verifique se o ProductService existe e pertence ao usuário logado
-    const productService = await ProductService.findOne({
-      where: { id: product_service_id, user_id: user_id },
-    });
-    if (!productService) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Produto/Serviço não encontrado ou não pertence a este usuário.",
+    // 2. Verifique se o ProductService existe SOMENTE SE um UUID válido for fornecido
+    let productService = null;
+    // Verifica se product_service_id não é nulo/undefined/string vazia
+    // E se é uma string que não seja a literal "null" (para evitar o erro que você teve)
+    // E, opcionalmente, se parece um UUID válido (usando uma regex simples ou uma biblioteca para validação real de UUID)
+    if (product_service_id && product_service_id !== "null") { // Garante que não é null ou a string "null"
+        // Uma regex básica para validar formato de UUID (apenas como exemplo)
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(product_service_id)) {
+            return res.status(400).json({
+                message: "O product_service_id fornecido não é um formato de UUID válido."
+            });
+        }
+
+        productService = await ProductService.findOne({
+            where: { id: product_service_id, user_id: user_id },
         });
+        if (!productService) {
+            return res.status(404).json({
+                message: "Produto/Serviço referenciado não encontrado ou não pertence a este usuário.",
+            });
+        }
     }
 
-    // 3. Crie o BudgetItem
+     // 3. Crie o BudgetItem
     const budgetItem = await BudgetItem.create({
       budget_id,
-      product_service_id,
+      product_service_id: (product_service_id === "null" || !product_service_id) ? null : product_service_id, // Garante que "null" string vire null ou que undefined/vazio vire null
       name,
       description,
       quantity,
@@ -111,11 +112,9 @@ exports.getBudgetItemsByBudget = async (req, res, next) => {
       where: { id: budgetId, user_id: user_id },
     });
     if (!budget) {
-      return res
-        .status(404)
-        .json({
-          message: "Orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message: "Orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     // 2. Obtenha os itens do orçamento
@@ -166,12 +165,10 @@ exports.getBudgetItemById = async (req, res, next) => {
     });
 
     if (!budgetItem) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Item do orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message:
+          "Item do orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     res.status(200).json({
@@ -211,12 +208,10 @@ exports.updateBudgetItem = async (req, res, next) => {
     });
 
     if (!budgetItem) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Item do orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message:
+          "Item do orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     const oldTotalItemPrice = parseFloat(budgetItem.total_item_price); // Guarda o valor antigo para recalcular o total do orçamento
@@ -283,12 +278,10 @@ exports.deleteBudgetItem = async (req, res, next) => {
     });
 
     if (!budgetItem) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Item do orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message:
+          "Item do orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     const budget = budgetItem.Budget; // O Budget já foi carregado na inclusão

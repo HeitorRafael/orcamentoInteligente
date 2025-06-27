@@ -20,10 +20,10 @@ exports.generateBudgetPdf = async (req, res, next) => {
         const budget = await Budget.findByPk(id, {
             include: [{
                 model: BudgetItem,
-                as: 'budgetItems', // Usar o alias definido na associação
+                as: 'BudgetItems', // Usar o alias definido na associação
                 include: [{
                     model: ProductService,
-                    as: 'productService' // Usar o alias definido na associação
+                    as: 'ProductService' // Usar o alias definido na associação
                 }]
             }]
         });

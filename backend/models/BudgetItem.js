@@ -21,7 +21,7 @@ const BudgetItem = sequelize.define('BudgetItem', {
   },
   product_service_id: { // Chave estrangeira para o ProductService original
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: ProductService, // Referencia o modelo ProductService
       key: 'id',
