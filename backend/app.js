@@ -5,6 +5,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { sequelize, testConnection } = require("./db");
+const { notFound, errorHandler } = require('./middleware/errorMiddleware'); // Importa os middlewares de erro
 
 // Importa todos os modelos (que se encontram no "index.js") garantindo que Sequelize os registre
 const models = require('./models');
@@ -28,6 +29,11 @@ app.get("/", (req, res) => {
 // Agora, todas as rotas começarão com /api
 // Ex: POST /api/users/register, GET /api/productservices, etc.
 app.use('/api', apiRoutes);
+
+// Captura erros 404 (Rotas não encontradas)
+app.use(notFound);
+// Middleware de tratamento de erros global
+app.use(errorHandler);
 
 
 
