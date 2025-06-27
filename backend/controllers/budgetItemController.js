@@ -7,7 +7,7 @@ const ProductService = require("../models/ProductService");
 // @desc    Criar um novo item para um orçamento
 // @route   POST /api/budgetitems
 // @access  Private
-exports.createBudgetItem = async (req, res) => {
+exports.createBudgetItem = async (req, res, next) => {
   const {
     budget_id,
     product_service_id,
@@ -101,7 +101,7 @@ exports.createBudgetItem = async (req, res) => {
 // @desc    Obter todos os itens de um orçamento específico do usuário logado
 // @route   GET /api/budgetitems/:budgetId
 // @access  Private
-exports.getBudgetItemsByBudget = async (req, res) => {
+exports.getBudgetItemsByBudget = async (req, res, next) => {
   const { budgetId } = req.params; // ID do Budget da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -139,7 +139,7 @@ exports.getBudgetItemsByBudget = async (req, res) => {
 // @desc    Obter um item de orçamento específico do usuário logado por ID
 // @route   GET /api/budgetitems/single/:id
 // @access  Private
-exports.getBudgetItemById = async (req, res) => {
+exports.getBudgetItemById = async (req, res, next) => {
   const { id } = req.params; // ID do BudgetItem da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -186,7 +186,7 @@ exports.getBudgetItemById = async (req, res) => {
 // @desc    Atualizar um item de orçamento existente
 // @route   PUT /api/budgetitems/:id
 // @access  Private
-exports.updateBudgetItem = async (req, res) => {
+exports.updateBudgetItem = async (req, res, next) => {
   const { id } = req.params; // ID do BudgetItem da URL
   const user_id = req.user.id; // ID do usuário logado
   const {
@@ -266,7 +266,7 @@ exports.updateBudgetItem = async (req, res) => {
 // @desc    Deletar um item de orçamento
 // @route   DELETE /api/budgetitems/:id
 // @access  Private
-exports.deleteBudgetItem = async (req, res) => {
+exports.deleteBudgetItem = async (req, res, next) => {
   const { id } = req.params; // ID do BudgetItem da URL
   const user_id = req.user.id; // ID do usuário logado
 

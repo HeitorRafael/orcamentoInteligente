@@ -6,7 +6,7 @@ const User = require("../models/User"); // Importa o modelo User (para associaç
 // @desc    Criar um novo produto/serviço
 // @route   POST /api/productservices
 // @access  Private
-exports.createProductService = async (req, res) => {
+exports.createProductService = async (req, res, next) => {
   const { name, description, type, base_price, estimated_time_hours } =
     req.body;
   const user_id = req.user.id; // O ID do usuário logado vem do middleware de autenticação
@@ -54,7 +54,7 @@ exports.createProductService = async (req, res) => {
 // @desc    Obter todos os produtos/serviços do usuário logado
 // @route   GET /api/productservices
 // @access  Private
-exports.getProductServices = async (req, res) => {
+exports.getProductServices = async (req, res, next) => {
   const user_id = req.user.id; // O ID do usuário logado
 
   try {
@@ -75,7 +75,7 @@ exports.getProductServices = async (req, res) => {
 // @desc    Obter um produto/serviço específico do usuário logado por ID
 // @route   GET /api/productservices/:id
 // @access  Private
-exports.getProductServiceById = async (req, res) => {
+exports.getProductServiceById = async (req, res, next) => {
   const { id } = req.params; // ID do produto/serviço da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -108,7 +108,7 @@ exports.getProductServiceById = async (req, res) => {
 // @desc    Atualizar um produto/serviço existente
 // @route   PUT /api/productservices/:id
 // @access  Private
-exports.updateProductService = async (req, res) => {
+exports.updateProductService = async (req, res, next) => {
   const { id } = req.params; // ID do produto/serviço da URL
   const user_id = req.user.id; // ID do usuário logado
   const { name, description, type, base_price, estimated_time_hours } =
@@ -154,7 +154,7 @@ exports.updateProductService = async (req, res) => {
 // @desc    Deletar um produto/serviço
 // @route   DELETE /api/productservices/:id
 // @access  Private
-exports.deleteProductService = async (req, res) => {
+exports.deleteProductService = async (req, res, next) => {
   const { id } = req.params; // ID do produto/serviço da URL
   const user_id = req.user.id; // ID do usuário logado
 

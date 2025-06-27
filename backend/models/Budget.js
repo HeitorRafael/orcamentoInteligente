@@ -38,11 +38,11 @@ const Budget = sequelize.define('Budget', {
     allowNull: false,
     defaultValue: 0.00,
   },
-  status: { // Ex: 'draft', 'sent', 'accepted', 'rejected', 'paid'
-    type: DataTypes.ENUM('draft', 'sent', 'accepted', 'rejected', 'paid', 'pending_payment', 'watermarked'),
-    defaultValue: 'draft',
+status: {
+    type: DataTypes.ENUM('draft', 'pending', 'approved', 'rejected', 'canceled'), // Status do orçamento
+    defaultValue: 'draft', // Ou 'pending' se a maioria dos orçamentos já nascerem enviados
     allowNull: false,
-  },
+},
   notes: { // Observações adicionais para o orçamento
     type: DataTypes.TEXT,
     allowNull: true,

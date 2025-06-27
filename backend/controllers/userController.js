@@ -19,7 +19,7 @@ const generateToken = (id) => {
 // @desc    Registrar um novo usuário
 // @route   POST /api/users/register
 // @access  Public
-exports.registerUser = async (req, res) => {
+exports.registerUser = async (req, res, next) => {
   const {
     name,
     email,
@@ -100,7 +100,7 @@ exports.registerUser = async (req, res) => {
 // @desc    Autenticar usuário e obter token
 // @route   POST /api/users/login
 // @access  Public
-exports.loginUser = async (req, res) => {
+exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -147,7 +147,7 @@ exports.loginUser = async (req, res) => {
 // @desc    Obter dados do perfil do usuário
 // @route   GET /api/users/profile
 // @access  Private
-exports.getUserProfile = async (req, res) => {
+exports.getUserProfile = async (req, res, next) => {
   // O objeto 'req.user' é adicionado pelo middleware de autenticação (authMiddleware)
   // Se a requisição chegou até aqui, significa que o usuário está autenticado
   try {

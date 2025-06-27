@@ -6,7 +6,7 @@ const ProductService = require("../models/ProductService"); // Para verificar a 
 // @desc    Criar um novo insumo para um ProductService
 // @route   POST /api/inputs
 // @access  Private
-exports.createInput = async (req, res) => {
+exports.createInput = async (req, res, next) => {
   const {
     product_service_id,
     name,
@@ -70,7 +70,7 @@ exports.createInput = async (req, res) => {
 // @desc    Obter todos os insumos de um ProductService específico do usuário logado
 // @route   GET /api/inputs/:productServiceId
 // @access  Private
-exports.getInputsByProductService = async (req, res) => {
+exports.getInputsByProductService = async (req, res, next) => {
   const { productServiceId } = req.params; // ID do ProductService da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -109,7 +109,7 @@ exports.getInputsByProductService = async (req, res) => {
 // @desc    Obter um insumo específico do usuário logado por ID
 // @route   GET /api/inputs/single/:id
 // @access  Private
-exports.getInputById = async (req, res) => {
+exports.getInputById = async (req, res, next) => {
   const { id } = req.params; // ID do insumo da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -144,7 +144,7 @@ exports.getInputById = async (req, res) => {
 // @desc    Atualizar um insumo existente
 // @route   PUT /api/inputs/:id
 // @access  Private
-exports.updateInput = async (req, res) => {
+exports.updateInput = async (req, res, next) => {
   const { id } = req.params; // ID do insumo da URL
   const user_id = req.user.id; // ID do usuário logado
   const {
@@ -206,7 +206,7 @@ exports.updateInput = async (req, res) => {
 // @desc    Deletar um insumo
 // @route   DELETE /api/inputs/:id
 // @access  Private
-exports.deleteInput = async (req, res) => {
+exports.deleteInput = async (req, res, next) => {
   const { id } = req.params; // ID do insumo da URL
   const user_id = req.user.id; // ID do usuário logado
 

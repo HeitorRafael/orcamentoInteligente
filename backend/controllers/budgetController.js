@@ -6,18 +6,22 @@ const User = require("../models/User"); // Para verificar a propriedade do orça
 // @desc    Criar um novo orçamento
 // @route   POST /api/budgets
 // @access  Private
-exports.createBudget = async (req, res) => {
+exports.createBudget = async (req, res, next) => {
+
   const { client_name, project_name, status, total_price, notes } = req.body;
-  const user_id = req.user.id; // ID do usuário logado
+  // A linha abaixo é crítica, por isso a ternária para robustez.
+  const user_id = req.user ? req.user.id : null; // Certifica-se de que user_id é null se req.user não existir
 
   // Validação básica
+  // Se req.user.id realmente é uma string válida como '992d46d6-014f-4f13-9636-82f1b4290b65',
+  // então !user_id será FALSE.
+  // Isso nos deixa com client_name ou project_name sendo falsy.
   if (!client_name || !project_name || !user_id) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Nome do cliente, nome do projeto e ID do usuário são campos obrigatórios para um orçamento.",
-      });
+    console.log("Erro de validação: Campos obrigatórios faltando."); // Adicionado log para confirmar que esta linha é atingida
+    return res.status(400).json({
+      message:
+        "Nome do cliente, nome do projeto e ID do usuário são campos obrigatórios para um orçamento.",
+    });
   }
 
   try {
@@ -35,6 +39,7 @@ exports.createBudget = async (req, res) => {
       budget: budget.toJSON(),
     });
   } catch (error) {
+    console.error("Erro ao criar orçamento no try-catch:", error); // Adicionado log para erros do try-catch
     next(error);
   }
 };
@@ -42,7 +47,8 @@ exports.createBudget = async (req, res) => {
 // @desc    Obter todos os orçamentos do usuário logado
 // @route   GET /api/budgets
 // @access  Private
-exports.getBudgets = async (req, res) => {
+exports.getBudgets = async (req, res, next) => {
+
   const user_id = req.user.id; // ID do usuário logado
 
   try {
@@ -63,7 +69,8 @@ exports.getBudgets = async (req, res) => {
 // @desc    Obter um orçamento específico do usuário logado por ID
 // @route   GET /api/budgets/:id
 // @access  Private
-exports.getBudgetById = async (req, res) => {
+exports.getBudgetById = async (req, res, next) => {
+
   const { id } = req.params; // ID do orçamento da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -76,11 +83,9 @@ exports.getBudgetById = async (req, res) => {
     });
 
     if (!budget) {
-      return res
-        .status(404)
-        .json({
-          message: "Orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message: "Orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     res.status(200).json({
@@ -95,7 +100,8 @@ exports.getBudgetById = async (req, res) => {
 // @desc    Atualizar um orçamento existente
 // @route   PUT /api/budgets/:id
 // @access  Private
-exports.updateBudget = async (req, res) => {
+exports.updateBudget = async (req, res, next) => {
+ 
   const { id } = req.params; // ID do orçamento da URL
   const user_id = req.user.id; // ID do usuário logado
   const { client_name, project_name, status, total_price, notes } = req.body;
@@ -109,11 +115,9 @@ exports.updateBudget = async (req, res) => {
     });
 
     if (!budget) {
-      return res
-        .status(404)
-        .json({
-          message: "Orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message: "Orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     // Atualiza os campos
@@ -141,7 +145,8 @@ exports.updateBudget = async (req, res) => {
 // @desc    Deletar um orçamento
 // @route   DELETE /api/budgets/:id
 // @access  Private
-exports.deleteBudget = async (req, res) => {
+exports.deleteBudget = async (req, res, next) => {
+ 
   const { id } = req.params; // ID do orçamento da URL
   const user_id = req.user.id; // ID do usuário logado
 
@@ -154,11 +159,9 @@ exports.deleteBudget = async (req, res) => {
     });
 
     if (!budget) {
-      return res
-        .status(404)
-        .json({
-          message: "Orçamento não encontrado ou não pertence a este usuário.",
-        });
+      return res.status(404).json({
+        message: "Orçamento não encontrado ou não pertence a este usuário.",
+      });
     }
 
     await budget.destroy(); // Deleta o registro do banco de dados
